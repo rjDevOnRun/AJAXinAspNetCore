@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="~/lib/jquery/jquery.js"></script>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Get API data using AJAX
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped" id="ProdTable">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        Manager.GetAllProduct();
+    })
+
+    var Manager = {
+        GetAllProduct: function () {
+            var obj = "";
+            var apiURL = "https://localhost:44397/api/product";
+            window.Manager.GetAPI(apiURL, onSuccess, onFailed);
+            function onSuccess(jsonData) {
+                /*debugger;*/
+
+                obj = jsonData;
+                $.each(jsonData, function (i, item) {
+                    /*Note: Property name-case are important*/
+                    var rows = "<tr>" +
+                        "<td id='Id'>" + item.id + "</td>" +
+                        "<td id='Name'>" + item.name + "</td>" +
+                        "<td id='Price'>" + item.price + "</td>" +
+                        "</tr>";
+                    $('#ProdTable').append(rows);
+                });
+            }
+            function onFailed(error) {
+                window.alert(error.statusText);
+            }
+            return obj;
+        },
+
+        GetAPI: function (apiURL, successCallback, errorCallBack) {
+            $.ajax({
+                type: "GET",
+                url: apiURL,
+                dataType: "json",
+                success: successCallback,
+                error: errorCallBack
+            });
+        },
+    }
+</script>
+
